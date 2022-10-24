@@ -12,6 +12,7 @@ import globalErrorHandler from "./controllers/errorController";
 import AppError from "./utils/AppError";
 import playerRoute from "./routes/playerRouter";
 import userRouter from "./routes/userRouter";
+import viewRouter from "./routes/viewRouter";
 
 const app = express();
 
@@ -57,6 +58,7 @@ app.use((req, res, next) => {
 
 // ROUTES
 
+app.use("/", viewRouter);
 app.use("/api/v1/players", playerRoute);
 app.use("/api/v1/users", userRouter);
 
