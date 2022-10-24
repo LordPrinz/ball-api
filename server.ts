@@ -11,7 +11,6 @@ process.on("uncaughtException", err => {
 dotenv.config();
 
 const DB = process.env.DATABASE?.replace("<PASSWORD>", process.env.DATABASE_PASSWORD || "");
-
 if (!DB) {
     console.log("No database link!");
     process.exit(1);

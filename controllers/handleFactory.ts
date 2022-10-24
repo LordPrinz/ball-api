@@ -3,6 +3,7 @@ import APIFeatures from "../utils/APIFeatures";
 import type { Model } from "mongoose";
 import type { Response, Request, NextFunction } from "express";
 import { cloudinaryConfig, uploader } from "../cloudinaryConfig";
+import validateId from "../utils/validateId";
 
 export const getAll = (
 	Model: Model<any>,
@@ -36,6 +37,14 @@ export const getOne = (
 	catchAsync(async (req: Request, res: Response, next: NextFunction) => {
 		const id = req.params.id;
 
+		if(!validateId(id)) {
+			return 	res.status(422).json({
+				status: "fail",
+				results: 0,
+				data: "Wrong ID",
+			});
+		}
+
 		const features = new APIFeatures(Model.find({ _id: id }), req.query as any);
 
 		const doc = await features.query;
@@ -56,6 +65,15 @@ export const deleteOne = (
 ) => {
 	catchAsync(async (req: Request, res: Response, next: NextFunction) => {
 		const id = req.params.id;
+
+		if(!validateId(id)) {
+			return 	res.status(422).json({
+				status: "fail",
+				results: 0,
+				data: "Wrong ID",
+			});
+		}
+
 		await Model.findByIdAndRemove(id);
 
 		res.status(204).json({
@@ -73,6 +91,14 @@ export const patchOne = (
 ) => {
 	catchAsync(async (req: Request, res: Response, next: NextFunction) => {
 		const id = req.params.id;
+
+		if(!validateId(id)) {
+			return 	res.status(422).json({
+				status: "fail",
+				results: 0,
+				data: "Wrong ID",
+			});
+		}
 
 		const doc = await Model.findOneAndUpdate({ _id: id }, req.query, {
 			upsert: true,

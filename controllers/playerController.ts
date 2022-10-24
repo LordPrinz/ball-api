@@ -2,10 +2,9 @@ import Player from "../models/playerModel";
 import { createOne, deleteOne, getAll, getOne, patchOne } from "./handleFactory";
 import multer from "multer";
 import AppError from "../utils/AppError";
-import { Request } from "express";
 
 const multerStorage = multer.diskStorage({
-	filename(req: Request, file, callback) {
+	filename(req, file, callback) {
 		const ext = file.mimetype.split("/")[1];
 		const filename = file.originalname;
 		callback(null, `player-${req.body.name}-${req.body.surname}-${Date.now()}.${ext}`);

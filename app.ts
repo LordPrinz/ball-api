@@ -11,13 +11,12 @@ import globalErrorHandler from "./controllers/errorController"
 import AppError from "./utils/AppError";
 import playerRoute from "./routes/playerRouter";
 
-
 const app = express()
 
 app.enable("trust proxy");
 
 app.use(cors());
-app.options("*", cors());
+app.options("*", cors() as any);
 
 app.use(helmet());
 
@@ -39,14 +38,15 @@ app.use(compression());
 
 app.use(json())
 
+app.use("/api/v1/players", playerRoute);
+
 app.use("/", (req: Request, res: Response, next: NextFunction) => {
     res.status(200).json({
-        data: `Server working ${Date.now().toString()}`
+        data: `Server working. Server time: ${new Date().toDateString()}`
     })
     next();
 });
 
-app.use("/api/v1/players", playerRoute);
 
 app.all("*", (req, res, next) => {
     new AppError(`Can't find ${req.originalUrl} on this server!`, 404);
