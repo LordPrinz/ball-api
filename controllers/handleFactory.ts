@@ -4,6 +4,7 @@ import type { Model } from "mongoose";
 import type { Response, Request, NextFunction } from "express";
 import { cloudinaryConfig, uploader } from "../cloudinaryConfig";
 import validateId from "../utils/validateId";
+import AppError from "../utils/AppError";
 
 const getAll = (Model: Model<any>) =>
 	catchAsync(async (req: Request, res: Response, next: NextFunction) => {
@@ -12,7 +13,11 @@ const getAll = (Model: Model<any>) =>
 			filter = { report: req.params.reportId };
 		}
 
-		const features = new APIFeatures(Model.find(filter), req.query as any);
+		const features = new APIFeatures(Model.find(filter), req.query as any)
+			.filter()
+			.sort()
+			.limitFields()
+			.paginate();
 
 		const doc = await features.query;
 
@@ -35,14 +40,11 @@ const getOne = (Model: Model<any>) =>
 			});
 		}
 
-		const features = new APIFeatures(Model.find({ _id: id }), req.query as any);
-
-		const doc = await features.query;
+		const doc = await Model.findById(id);
 
 		res.status(200).json({
 			status: "success",
-			results: doc.length,
-			data: doc[0],
+			data: doc,
 		});
 	});
 
@@ -58,7 +60,11 @@ const deleteOne = (Model: Model<any>) =>
 			});
 		}
 
-		await Model.findByIdAndRemove(id);
+		const doc = await Model.findByIdAndRemove(id);
+
+		if (!doc) {
+			return next(new AppError("No document found with that ID", 404));
+		}
 
 		res.status(204).json({
 			status: "success",
@@ -96,10 +102,14 @@ const patchOne = (Model: Model<any>) =>
 			upsert: true,
 		});
 
+		if (!doc) {
+			return next(new AppError("No document found with that ID", 404));
+		}
+
 		res.status(200).json({
 			status: "success",
 			data: {
-				data: doc[0],
+				data: doc,
 			},
 		});
 	});
