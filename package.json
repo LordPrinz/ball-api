@@ -4,7 +4,11 @@
   "description": "",
   "main": "server.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "ts-node server.ts",
+    "dev": "nodemon server.ts",
+    "start:prod": "NODE_ENV=production ts-node server.ts",
+    "postinstall": "tsc",
+    "deploy": "git add . && git commit -m Heroku && git push heroku master"
   },
   "author": "LordPrinz",
   "license": "ISC",
