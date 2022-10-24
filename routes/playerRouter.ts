@@ -1,10 +1,21 @@
 import express from "express";
-import { createPlayer, deletePlayer, getAllPlayers, getPlayer, patchPlayer, uploadPlayerImage } from "../controllers/playerController";
+import {
+	createPlayer,
+	deletePlayer,
+	getAllPlayers,
+	getPlayer,
+	patchPlayer,
+	uploadPlayerImage,
+} from "../controllers/playerController";
 
 const router = express.Router();
 
-router.route("/").get(getAllPlayers).post(uploadPlayerImage,createPlayer);
+router.route("/").get(getAllPlayers).post(uploadPlayerImage, createPlayer);
 
-router.route("/:id").get(getPlayer).delete(deletePlayer).patch(patchPlayer);
+router
+	.route("/:id")
+	.get(getPlayer)
+	.delete(deletePlayer)
+	.patch(uploadPlayerImage, patchPlayer);
 
 export default router;

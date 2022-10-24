@@ -1,13 +1,21 @@
 import Player from "../models/playerModel";
-import { createOne, deleteOne, getAll, getOne, patchOne } from "./handleFactory";
+import {
+	createOne,
+	deleteOne,
+	getAll,
+	getOne,
+	patchOne,
+} from "./handleFactory";
 import multer from "multer";
 import AppError from "../utils/AppError";
 
 const multerStorage = multer.diskStorage({
 	filename(req, file, callback) {
 		const ext = file.mimetype.split("/")[1];
-		const filename = file.originalname;
-		callback(null, `player-${req.body.name}-${req.body.surname}-${Date.now()}.${ext}`);
+		callback(
+			null,
+			`player-${req.body.name}-${req.body.surname}-${Date.now()}.${ext}`
+		);
 	},
 });
 
@@ -24,7 +32,6 @@ const upload = multer({
 		}
 	},
 });
-
 
 export const uploadPlayerImage = upload.single("image");
 export const getAllPlayers = getAll.bind(null, Player);

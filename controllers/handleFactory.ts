@@ -37,8 +37,8 @@ export const getOne = (
 	catchAsync(async (req: Request, res: Response, next: NextFunction) => {
 		const id = req.params.id;
 
-		if(!validateId(id)) {
-			return 	res.status(422).json({
+		if (!validateId(id)) {
+			return res.status(422).json({
 				status: "fail",
 				results: 0,
 				data: "Wrong ID",
@@ -66,8 +66,8 @@ export const deleteOne = (
 	catchAsync(async (req: Request, res: Response, next: NextFunction) => {
 		const id = req.params.id;
 
-		if(!validateId(id)) {
-			return 	res.status(422).json({
+		if (!validateId(id)) {
+			return res.status(422).json({
 				status: "fail",
 				results: 0,
 				data: "Wrong ID",
@@ -92,15 +92,29 @@ export const patchOne = (
 	catchAsync(async (req: Request, res: Response, next: NextFunction) => {
 		const id = req.params.id;
 
-		if(!validateId(id)) {
-			return 	res.status(422).json({
+		if (!validateId(id)) {
+			return res.status(422).json({
 				status: "fail",
 				results: 0,
 				data: "Wrong ID",
 			});
 		}
 
-		const doc = await Model.findOneAndUpdate({ _id: id }, req.query, {
+		let uploadRes: any;
+		const imagePath = (req as any).file?.path;
+
+		if (imagePath) {
+			const file = imagePath.replace("file:///", "");
+			cloudinaryConfig;
+			uploadRes = await uploader.upload(file).catch((err) => console.log(err));
+		}
+
+		let data: any =
+			uploadRes !== undefined
+				? { ...req.body, image: (uploadRes as any)?.secure_url }
+				: { ...req.body };
+
+		const doc = await Model.findOneAndUpdate({ _id: id }, data, {
 			upsert: true,
 		});
 
@@ -122,6 +136,7 @@ export const createOne = (
 	catchAsync(async (req: Request, res: Response, next: NextFunction) => {
 		let uploadRes: any;
 		const imagePath = (req as any).file?.path;
+
 		if (imagePath) {
 			const file = imagePath.replace("file:///", "");
 			cloudinaryConfig;
