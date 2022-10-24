@@ -5,12 +5,13 @@ import morgan from "morgan";
 import rateLimit from "express-rate-limit";
 import mongoSanitize from "express-mongo-sanitize";
 import compression from "compression";
-import { Response, Request, NextFunction, json } from "express";
+import { json } from "express";
+import cookieParser from "cookie-parser";
+import hpp from "hpp";
 import globalErrorHandler from "./controllers/errorController";
 import AppError from "./utils/AppError";
 import playerRoute from "./routes/playerRouter";
-import cookieParser from "cookie-parser";
-import hpp from "hpp";
+// import userRouter from "./routes/userRouter";
 
 const app = express();
 
@@ -54,7 +55,10 @@ app.use((req, res, next) => {
 	next();
 });
 
+// ROUTES
+
 app.use("/api/v1/players", playerRoute);
+// app.use("/api/v1/users", userRouter);
 
 app.all("*", (req, res, next) => {
 	new AppError(`Can't find ${req.originalUrl} on this server!`, 404);
