@@ -5,9 +5,11 @@ import morgan from "morgan"
 import rateLimit from "express-rate-limit";
 import mongoSanitize from "express-mongo-sanitize";
 import compression from "compression";
-import globalErrorHandler from "./controllers/errorController"
 import { Response, Request, NextFunction, json } from "express";
+
+import globalErrorHandler from "./controllers/errorController"
 import AppError from "./utils/AppError";
+import playerRoute from "./routes/playerRouter";
 
 
 const app = express()
@@ -43,6 +45,8 @@ app.use("/", (req: Request, res: Response, next: NextFunction) => {
     })
     next();
 });
+
+app.use("/api/v1/players", playerRoute);
 
 app.all("*", (req, res, next) => {
     new AppError(`Can't find ${req.originalUrl} on this server!`, 404);
