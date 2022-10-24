@@ -25,9 +25,9 @@ const upload = multer({
 	fileFilter: multerFilter,
 });
 
-exports.uploadUserPhoto = upload.single("photo");
+const uploadUserPhoto = upload.single("photo");
 
-exports.resizeUserPhoto = catchAsync(
+const resizeUserPhoto = catchAsync(
 	async (
 		req: Request & { user: { id: string } },
 		res: Response,
@@ -56,12 +56,12 @@ const filterObj = (obj: any, ...allowedFields: any) => {
 	return newObj;
 };
 
-exports.getMe = (req: Request, res: Response, next: NextFunction) => {
+const getMe = (req: Request, res: Response, next: NextFunction) => {
 	req.params.id = (req as any).user.id;
 	next();
 };
 
-exports.updateMe = catchAsync(
+const updateMe = catchAsync(
 	async (req: Request, res: Response, next: NextFunction) => {
 		if (req.body.password || req.body.passwordConfirm) {
 			return next(
@@ -95,7 +95,7 @@ exports.updateMe = catchAsync(
 	}
 );
 
-exports.deleteMe = catchAsync(
+const deleteMe = catchAsync(
 	async (
 		req: Request & { user: { id: string } },
 		res: Response,
@@ -110,15 +110,28 @@ exports.deleteMe = catchAsync(
 	}
 );
 
-exports.createUser = (req: Request, res: Response) => {
+const createUser = (req: Request, res: Response) => {
 	res.status(500).json({
 		status: "error",
 		message: "This route is not yet defined! 😒 Please use /signup instead",
 	});
 };
 
-exports.getAllUsers = factory.getAll(User);
-exports.getUser = factory.getOne(User);
+const getAllUsers = factory.getAll(User);
+const getUser = factory.getOne(User);
 
-exports.updateUser = factory.patchOne(User);
-exports.deleteUser = factory.deleteOne(User);
+const updateUser = factory.patchOne(User);
+const deleteUser = factory.deleteOne(User);
+
+export default {
+	getAllUsers,
+	getUser,
+	updateUser,
+	deleteUser,
+	updateMe,
+	getMe,
+	resizeUserPhoto,
+	uploadUserPhoto,
+	createUser,
+	deleteMe,
+};
