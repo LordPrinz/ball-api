@@ -1,17 +1,18 @@
 import express from "express";
-import cors from "cors"
-import helmet from "helmet";
-import morgan from "morgan"
+import cors from "cors";
+import helmet, { xssFilter } from "helmet";
+import morgan from "morgan";
 import rateLimit from "express-rate-limit";
 import mongoSanitize from "express-mongo-sanitize";
 import compression from "compression";
 import { Response, Request, NextFunction, json } from "express";
-
-import globalErrorHandler from "./controllers/errorController"
+import globalErrorHandler from "./controllers/errorController";
 import AppError from "./utils/AppError";
 import playerRoute from "./routes/playerRouter";
+import cookieParser from "cookie-parser";
+import hpp from "hpp";
 
-const app = express()
+const app = express();
 
 app.enable("trust proxy");
 
@@ -21,37 +22,44 @@ app.options("*", cors() as any);
 app.use(helmet());
 
 if (process.env.NODE_ENV === "development") {
-    app.use(morgan("dev"));
+	app.use(morgan("dev"));
 }
 
 const limiter = rateLimit({
-    max: 100,
-    windowMs: 1000 * 60,
-    message: "Too many requests from this IP, please try again in a minute."
-})
+	max: 100,
+	windowMs: 1000 * 60,
+	message: "Too many requests from this IP, please try again in a minute.",
+});
 
 app.use("/api", limiter);
 
+app.use(json());
+
+app.use(cookieParser());
+
 app.use(mongoSanitize());
+
+app.use(xssFilter());
+
+app.use(
+	hpp({
+		whitelist: ["age", "role", "club"],
+	})
+);
 
 app.use(compression());
 
-app.use(json())
+app.use((req, res, next) => {
+	(req as any).requestTime = new Date().toISOString();
+	next();
+});
 
 app.use("/api/v1/players", playerRoute);
 
-app.use("/", (req: Request, res: Response, next: NextFunction) => {
-    res.status(200).json({
-        data: `Server working. Server time: ${new Date().toDateString()}`
-    })
-    next();
+app.all("*", (req, res, next) => {
+	new AppError(`Can't find ${req.originalUrl} on this server!`, 404);
 });
 
-
-app.all("*", (req, res, next) => {
-    new AppError(`Can't find ${req.originalUrl} on this server!`, 404);
-})
-
-app.use(globalErrorHandler)
+app.use(globalErrorHandler);
 
 export default app;
