@@ -1,11 +1,5 @@
 import Player from "../models/playerModel";
-import {
-	createOne,
-	deleteOne,
-	getAll,
-	getOne,
-	patchOne,
-} from "./handleFactory";
+import factory from "./handleFactory";
 import multer from "multer";
 import AppError from "../utils/AppError";
 
@@ -33,9 +27,11 @@ const upload = multer({
 	},
 });
 
-export const uploadPlayerImage = upload.single("image");
-export const getAllPlayers = getAll.bind(null, Player);
-export const createPlayer = createOne.bind(null, Player);
-export const getPlayer = getOne.bind(null, Player);
-export const deletePlayer = deleteOne.bind(null, Player);
-export const patchPlayer = patchOne.bind(null, Player);
+export default {
+	uploadPlayerImage: upload.single("image"),
+	getAllPlayers: factory.getAll(Player),
+	createPlayer: factory.createOne(Player),
+	getPlayer: factory.getOne(Player),
+	deletePlayer: factory.deleteOne(Player),
+	patchPlayer: factory.patchOne(Player),
+};

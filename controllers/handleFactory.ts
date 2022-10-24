@@ -5,12 +5,7 @@ import type { Response, Request, NextFunction } from "express";
 import { cloudinaryConfig, uploader } from "../cloudinaryConfig";
 import validateId from "../utils/validateId";
 
-export const getAll = (
-	Model: Model<any>,
-	req: Request,
-	res: Response,
-	next: NextFunction
-) =>
+const getAll = (Model: Model<any>) =>
 	catchAsync(async (req: Request, res: Response, next: NextFunction) => {
 		let filter = {};
 		if (req.params.reportId) {
@@ -26,14 +21,9 @@ export const getAll = (
 			results: doc.length,
 			data: doc,
 		});
-	})(req, res, next);
+	});
 
-export const getOne = (
-	Model: Model<any>,
-	req: Request,
-	res: Response,
-	next: NextFunction
-) => {
+const getOne = (Model: Model<any>) =>
 	catchAsync(async (req: Request, res: Response, next: NextFunction) => {
 		const id = req.params.id;
 
@@ -54,15 +44,9 @@ export const getOne = (
 			results: doc.length,
 			data: doc[0],
 		});
-	})(req, res, next);
-};
+	});
 
-export const deleteOne = (
-	Model: Model<any>,
-	req: Request,
-	res: Response,
-	next: NextFunction
-) => {
+const deleteOne = (Model: Model<any>) =>
 	catchAsync(async (req: Request, res: Response, next: NextFunction) => {
 		const id = req.params.id;
 
@@ -80,15 +64,9 @@ export const deleteOne = (
 			status: "success",
 			data: null,
 		});
-	})(req, res, next);
-};
+	});
 
-export const patchOne = (
-	Model: Model<any>,
-	req: Request,
-	res: Response,
-	next: NextFunction
-) => {
+const patchOne = (Model: Model<any>) =>
 	catchAsync(async (req: Request, res: Response, next: NextFunction) => {
 		const id = req.params.id;
 
@@ -124,15 +102,9 @@ export const patchOne = (
 				data: doc[0],
 			},
 		});
-	})(req, res, next);
-};
+	});
 
-export const createOne = (
-	Model: Model<any>,
-	req: Request,
-	res: Response,
-	next: NextFunction
-) => {
+const createOne = (Model: Model<any>) =>
 	catchAsync(async (req: Request, res: Response, next: NextFunction) => {
 		let uploadRes: any;
 		const imagePath = (req as any).file?.path;
@@ -156,5 +128,12 @@ export const createOne = (
 				data: doc,
 			},
 		});
-	})(req, res, next);
+	});
+
+export default {
+	getAll,
+	getOne,
+	createOne,
+	patchOne,
+	deleteOne,
 };
