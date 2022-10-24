@@ -27,6 +27,7 @@ const upload = multer({
 });
 
 
+export const uploadPlayerImage = upload.single("image");
 export const getAllPlayers = getAll.bind(null, Player);
 export const createPlayer = createOne.bind(null, Player);
 export const getPlayer = getOne.bind(null, Player);
