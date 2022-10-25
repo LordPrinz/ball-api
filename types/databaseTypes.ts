@@ -19,6 +19,7 @@ export interface User {
 	email: string;
 	image: string;
 	password: string;
+	passwordConfirm: string;
 	__v: string;
 }
 

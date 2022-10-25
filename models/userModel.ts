@@ -1,5 +1,7 @@
 import mongoose from "mongoose";
 import validator from "validator";
+import { User } from "../types/databaseTypes";
+import bycrypt from "bcryptjs";
 
 const userSchema = new mongoose.Schema({
 	name: {
@@ -19,6 +21,25 @@ const userSchema = new mongoose.Schema({
 		required: [true, "Please provide a password"],
 		minLength: 8,
 	},
+	passwordConfirm: {
+		type: String,
+		required: [true, "Please confirm your password"],
+		validate: {
+			validator: function (el: string) {
+				return el === (this as mongoose.Document & User).password;
+			},
+		},
+	},
+});
+
+userSchema.pre("save", async function (next) {
+	if (!this.isModified("password")) return next();
+
+	this.password = await bycrypt.hash(this.password, 12);
+
+	// Delete passwordConfirm field
+	(this.passwordConfirm as any) = undefined;
+	next();
 });
 
 const User = mongoose.model("User", userSchema);
