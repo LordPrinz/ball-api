@@ -1,5 +1,18 @@
 import mongoose from "mongoose";
 
+const roles = [
+	"	Goalkeeper",
+	"Centre-Backs",
+	"Full-Backs",
+	"Wing-Backs",
+	"Defensive Midfielders",
+	"Central Midfielders",
+	"Attacking Midfielders",
+	"Wingers",
+	"Inside Forwards",
+	"Strikers",
+];
+
 const playerSchema = new mongoose.Schema({
 	name: {
 		type: String,
@@ -15,7 +28,11 @@ const playerSchema = new mongoose.Schema({
 	},
 	role: {
 		type: String,
-		required: true,
+		enum: roles,
+		required: [
+			true,
+			`Provide valid role. Available roles: ${roles.join(", ")}`,
+		],
 	},
 	club: {
 		type: String,
