@@ -4,14 +4,14 @@ import playerController from "../controllers/playerController";
 const router = express.Router();
 
 router
-	.route("/")
-	.get(playerController.getAllPlayers)
-	.post(playerController.uploadPlayerImage, playerController.createPlayer);
+  .route("/")
+  .get(playerController.getAllPlayers)
+  .post(playerController.uploadPlayerImage, playerController.createPlayer);
 
 router
-	.route("/:id")
-	.get(playerController.getPlayer)
-	.delete(playerController.deletePlayer)
-	.patch(playerController.uploadPlayerImage, playerController.patchPlayer);
+  .route("/:id")
+  .get(playerController.getPlayer)
+  .delete(playerController.deletePlayer)
+  .patch(playerController.uploadPlayerImage, playerController.patchPlayer);
 
 export default router;
