@@ -11,7 +11,6 @@ import hpp from "hpp";
 import globalErrorHandler from "./controllers/errorController";
 import AppError from "./utils/AppError";
 import playerRoute from "./routes/playerRouter";
-import userRouter from "./routes/userRoutes";
 
 const app = express();
 
@@ -23,13 +22,13 @@ app.options("*", cors() as any);
 app.use(helmet());
 
 if (process.env.NODE_ENV === "development") {
-  app.use(morgan("dev"));
+	app.use(morgan("dev"));
 }
 
 const limiter = rateLimit({
-  max: 100,
-  windowMs: 1000 * 60,
-  message: "Too many requests from this IP, please try again in a minute.",
+	max: 100,
+	windowMs: 1000 * 60,
+	message: "Too many requests from this IP, please try again in a minute.",
 });
 
 app.use("/api", limiter);
@@ -43,24 +42,23 @@ app.use(mongoSanitize());
 app.use(xssFilter());
 
 app.use(
-  hpp({
-    whitelist: ["age", "role", "club"],
-  })
+	hpp({
+		whitelist: ["age", "role", "club"],
+	})
 );
 
 app.use(compression());
 
 app.use((req, res, next) => {
-  (req as any).requestTime = new Date().toISOString();
-  next();
+	(req as any).requestTime = new Date().toISOString();
+	next();
 });
 
 // ROUTES
 app.use("/api/v1/players", playerRoute);
-app.use("/api/v1/users", userRouter);
 
 app.all("*", (req, res, next) => {
-  new AppError(`Can't find ${req.originalUrl} on this server!`, 404);
+	new AppError(`Can't find ${req.originalUrl} on this server!`, 404);
 });
 
 app.use(globalErrorHandler);
