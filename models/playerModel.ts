@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
 const roles = [
-	"	Goalkeeper",
+	"Goalkeeper",
 	"Centre-Backs",
 	"Full-Backs",
 	"Wing-Backs",
