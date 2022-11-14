@@ -57,7 +57,7 @@ app.use((req, res, next) => {
 
 // ROUTES
 app.use("/api/v1/players", playerRoute);
-app.use("/api/v1/teams", teamRoute)
+app.use("/api/v1/teams", teamRoute);
 
 app.all("*", (req, res, next) => {
 	new AppError(`Can't find ${req.originalUrl} on this server!`, 404);
