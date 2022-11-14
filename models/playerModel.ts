@@ -10,7 +10,7 @@ const roles = [
 	"Attacking Midfielders",
 	"Wingers",
 	"Inside Forwards",
-	"Strikers",
+	"Striker",
 ];
 
 const playerSchema = new mongoose.Schema({
